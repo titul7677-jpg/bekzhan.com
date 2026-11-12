@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ✏️ EDIT: browser tab title + Google description -->
+  <title>Bekzhan — Mechanical Engineering Student</title>
+  <meta name="description" content="Bekzhan — 3rd-year Mechanical Engineering student at Politecnico di Torino. CAD, electronics, robotics and code.">
+
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="#top" class="nav__logo">bekzhan<span class="accent">.</span></a>
+      <nav class="nav__links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ===================== 1. HERO ===================== -->
+    <section class="hero container">
+      <!-- ✏️ EDIT: small line above your name -->
+      <p class="hero__eyebrow">Mechanical Engineering · Politecnico di Torino</p>
+
+      <!-- ✏️ EDIT: your name -->
+      <h1 class="hero__title">Hi, I'm <span class="accent">Bekzhan</span>.</h1>
+
+      <!-- ✏️ EDIT: one-line description -->
+      <p class="hero__subtitle">
+        I design things in CAD, wire them up with electronics, and write the code that makes them move.
+        Looking for a mechanical engineering internship in Piedmont.
+      </p>
+
+      <div class="hero__buttons">
+        <!-- ✏️ EDIT: replace the three links below -->
+        <a class="btn btn--primary" href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn" href="https://github.com/YOUR-GITHUB" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="mailto:hello@bekzhan.com">Email</a>
+      </div>
+    </section>
+
+    <!-- ===================== 2. ABOUT ===================== -->
+    <section id="about" class="section container">
+      <h2 class="section__title">About</h2>
+      <div class="about">
+        <!-- ✏️ EDIT: your About text (2–3 sentences) -->
+        <p>
+          I'm a 3rd-year Mechanical Engineering student at Politecnico di Torino, Italy.
+          I enjoy turning ideas into real objects — from 3D models in SolidWorks and Blender
+          to Arduino-powered prototypes and small robots.
+        </p>
+        <p>
+          In my free time I build small apps and games. I'm currently looking for an
+          internship in Piedmont where I can learn from real engineering teams.
+        </p>
+
+        <!-- ✏️ EDIT: skill tags (add / remove <li> lines) -->
+        <ul class="tags">
+          <li>SolidWorks</li>
+          <li>Blender</li>
+          <li>Arduino</li>
+          <li>Electronics</li>
+          <li>Robotics</li>
+          <li>Programming</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== 3. PROJECTS ===================== -->
+    <!--
+      Each project is one <a class="card"> block.
+      - To add a project: copy a whole card block and change the text.
+      - Image: put your picture in assets/img/ and change the src="..." path.
+      - Link: href points to the project's own page in projects/ (copy projects/project-template.html).
+    -->
+    <section id="projects" class="section container">
+      <h2 class="section__title">Projects</h2>
+      <div class="grid">
+
+        <!-- ✏️ PROJECT 1 -->
+        <a class="card" href="projects/project-template.html">
+          <img class="card__img" src="assets/img/placeholder.svg" alt="Project 1 image" loading="lazy">
+          <div class="card__body">
+            <span class="card__tag">CAD</span>
+            <h3 class="card__title">Project One</h3>
+            <p class="card__text">Short description of the project — what it is and what you did.</p>
+          </div>
+        </a>
+
+        <!-- ✏️ PROJECT 2 -->
+        <a class="card" href="projects/project-template.html">
+          <img class="card__img" src="assets/img/placeholder.svg" alt="Project 2 image" loading="lazy">
+          <div class="card__body">
+            <span class="card__tag">Electronics</span>
+            <h3 class="card__title">Project Two</h3>
+            <p class="card__text">Short description of the project — what it is and what you did.</p>
+          </div>
+        </a>
+
+        <!-- ✏️ PROJECT 3 -->
+        <a class="card" href="projects/project-template.html">
+          <img class="card__img" src="assets/img/placeholder.svg" alt="Project 3 image" loading="lazy">
+          <div class="card__body">
+            <span class="card__tag">Robotics</span>
+            <h3 class="card__title">Project Three</h3>
+            <p class="card__text">Short description of the project — what it is and what you did.</p>
+          </div>
+        </a>
+
+        <!-- ✏️ PROJECT 4 -->
+        <a class="card" href="projects/project-template.html">
+          <img class="card__img" src="assets/img/placeholder.svg" alt="Project 4 image" loading="lazy">
+          <div class="card__body">
+            <span class="card__tag">Code</span>
+            <h3 class="card__title">Project Four</h3>
+            <p class="card__text">Short description of the project — what it is and what you did.</p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===================== 4. CONTACT ===================== -->
+    <section id="contact" class="section container contact">
+      <h2 class="section__title">Contact</h2>
+      <p class="contact__text">Open to internship opportunities in Piedmont. The best way to reach me is by email.</p>
+
+      <!-- ✏️ EDIT: your email (change it in BOTH places on this line) -->
+      <a class="contact__email" href="mailto:hello@bekzhan.com">hello@bekzhan.com</a>
+
+      <div class="contact__links">
+        <!-- ✏️ EDIT: same links as in the hero -->
+        <a href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/YOUR-GITHUB" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer container">
+    <p>© <span id="year">2026</span> Bekzhan · Torino, Italy</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

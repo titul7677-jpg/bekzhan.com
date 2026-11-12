@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#1c1e22"/>
+  <g fill="none" stroke="#2c2f35" stroke-width="1">
+    <path d="M0 100H800M0 200H800M0 300H800M0 400H800M100 0V500M200 0V500M300 0V500M400 0V500M500 0V500M600 0V500M700 0V500"/>
+  </g>
+  <g fill="none" stroke="#ff7a1a" stroke-width="3" stroke-linejoin="round" opacity="0.85">
+    <path d="M400 170 L470 210 L470 290 L400 330 L330 290 L330 210 Z"/>
+    <path d="M330 210 L400 250 L470 210 M400 250 V330"/>
+  </g>
+  <text x="400" y="390" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="20" fill="#6b6e75">Project image</text>
+</svg>

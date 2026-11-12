@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!--
+    HOW TO USE THIS TEMPLATE
+    1. Copy this file, e.g. projects/robot-arm.html
+    2. Edit everything marked ✏️
+    3. On index.html, point that project's card href to "projects/robot-arm.html"
+    Note: this page is inside projects/, so paths to shared files start with "../"
+  -->
+
+  <!-- ✏️ EDIT: project name -->
+  <title>Project One — Bekzhan</title>
+
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <!-- 3D VIEWER (optional): uncomment this line AND the <model-viewer> block below -->
+  <!-- <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script> -->
+</head>
+<body>
+
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="../index.html" class="nav__logo">bekzhan<span class="accent">.</span></a>
+      <nav class="nav__links">
+        <a href="../index.html#projects">Projects</a>
+        <a href="../index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container project">
+    <a class="back-link" href="../index.html#projects">← All projects</a>
+
+    <!-- ✏️ EDIT: title + short info line -->
+    <h1 class="project__title">Project One</h1>
+    <p class="project__meta">CAD · SolidWorks · 2026</p>
+
+    <!-- ✏️ EDIT: main image -->
+    <img class="project__cover" src="../assets/img/placeholder.svg" alt="Project One cover image">
+
+    <!--
+      3D MODEL VIEWER (optional)
+      1. Export your model as .glb (Blender: File → Export → glTF 2.0, format "glb").
+         From SolidWorks: save as .STL/.OBJ, import into Blender, then export .glb.
+      2. Put the file in the models/ folder, e.g. models/robot-arm.glb
+      3. Uncomment the script line in <head> and the block below.
+
+    <model-viewer class="viewer"
+      src="../models/robot-arm.glb"
+      alt="3D model of the robot arm"
+      camera-controls
+      auto-rotate
+      shadow-intensity="1">
+    </model-viewer>
+    -->
+
+    <!-- ✏️ EDIT: write about your project -->
+    <h2>Overview</h2>
+    <p>What is this project? What problem does it solve? One or two short paragraphs.</p>
+
+    <h2>What I did</h2>
+    <p>Your role: design, calculations, wiring, code, testing. Mention tools (SolidWorks, Arduino, ...).</p>
+
+    <h2>Result</h2>
+    <p>What worked, what you learned, what you would improve next time. Add photos if you have them.</p>
+  </main>
+
+  <footer class="footer container">
+    <p>© <span id="year">2026</span> Bekzhan · Torino, Italy</p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>
