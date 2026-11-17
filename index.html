@@ -1,159 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bekzhan Azamat — Mechanical Engineering</title>
+<meta name="description" content="Bekzhan Azamat — Mechanical Engineering student at Politecnico di Torino. CAD, electronics and code projects.">
+<meta name="theme-color" content="#0b3f73">
+<meta property="og:title" content="Bekzhan Azamat — Mechanical Engineering">
+<meta property="og:description" content="Mechanical Engineering student at Politecnico di Torino. I design, build and code things, from CAD models to circuits.">
+<meta property="og:url" content="https://bekzhan.com/">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b3f73'/%3E%3Crect x='2' y='2' width='28' height='28' fill='none' stroke='%23e6f1fb' stroke-width='2'/%3E%3Ctext x='16' y='21' font-family='Courier New,monospace' font-weight='bold' font-size='13' fill='%23e6f1fb' text-anchor='middle'%3EBA%3C/text%3E%3C/svg%3E">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; overflow:hidden; }
+  body {
+    font-family:"Courier New", monospace; color:#e6f1fb;
+    background-color:#0b3f73;
+    background-image:
+      linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px);
+    background-size:20px 20px,20px 20px,100px 100px,100px 100px;
+  }
 
-  <!-- ✏️ EDIT: browser tab title + Google description -->
-  <title>Bekzhan — Mechanical Engineering Student</title>
-  <meta name="description" content="Bekzhan — 3rd-year Mechanical Engineering student at Politecnico di Torino. CAD, electronics, robotics and code.">
+  /* ---------- background drawings ---------- */
+  .drawing { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; }
+  .dim { color:rgba(230,241,251,.18); }
+  .lit {
+    color:#eaf5ff;
+    filter:drop-shadow(0 0 3px rgba(160,210,255,.8));
+    -webkit-mask-image:radial-gradient(240px circle at var(--x,-999px) var(--y,-999px), #000 35%, transparent 100%);
+            mask-image:radial-gradient(240px circle at var(--x,-999px) var(--y,-999px), #000 35%, transparent 100%);
+  }
 
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  /* ---------- title block = navigation ---------- */
+  .title-block {
+    position:fixed; right:24px; bottom:24px; z-index:10; width:420px;
+    border:2px solid #e6f1fb; background:#0b3f73;   /* solid, nothing shows through */
+  }
+  .tb-row { display:grid; border-top:1px solid rgba(230,241,251,.5); }
+  .tb-row:first-child { border-top:none; }
+  .tb-row > * { padding:6px 10px; border-left:1px solid rgba(230,241,251,.5); }
+  .tb-row > *:first-child { border-left:none; }
+  .name { font-size:24px; font-weight:bold; letter-spacing:2px; }
+  .role { font-size:12px; color:#b5d4f4; }
+  .label { display:block; font-size:9px; color:#85b7eb; letter-spacing:1px; }
+  .meta { grid-template-columns:1fr 1fr 1fr; font-size:12px; }
+
+  /* tabs: new ones wrap onto a new row automatically */
+  #tabs { display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); padding:0; border:none; }
+  #tabs button {
+    font:inherit; font-size:12px; color:#b5d4f4; background:none; cursor:pointer; text-align:left;
+    border:none; border-left:1px solid rgba(230,241,251,.5); border-top:1px solid rgba(230,241,251,.5);
+    margin:-1px 0 0 -1px; padding:6px 10px;
+  }
+  #tabs button .label { color:#5b8fc4; }
+  #tabs button:hover { background:rgba(230,241,251,.08); color:#fff; }
+  #tabs button.active { background:#e6f1fb; color:#0b3f73; }
+  #tabs button.active .label { color:#185fa5; }
+
+  /* ---------- content sheets ---------- */
+  .sheet {
+    display:none; position:fixed; z-index:5;
+    top:6vh; left:50%; transform:translateX(-50%);
+    width:min(760px, calc(100vw - 40px)); max-height:calc(100vh - 12vh - 200px);
+    overflow-y:auto; padding:28px 32px;
+    background:rgba(11,63,115,.94); border:2px solid #e6f1fb; outline:1px solid rgba(230,241,251,.4); outline-offset:6px;
+  }
+  .sheet.open { display:block; }
+  .sheet.home { display:none !important; }          /* home = just the drawing */
+  .sheet h2 { font-size:22px; letter-spacing:2px; margin-bottom:4px; }
+  .sheet .sub { color:#85b7eb; font-size:12px; margin-bottom:22px; }
+  .sheet p { color:#cfe3f7; line-height:1.6; margin-bottom:12px; }
+  .sheet a { color:#fff; }
+  .close { position:absolute; top:10px; right:14px; background:none; border:none; color:#b5d4f4; font:inherit; font-size:20px; cursor:pointer; }
+
+  /* project cards */
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:14px; }
+  .card { border:1px solid rgba(230,241,251,.6); padding:14px; }
+  .card .label { margin-bottom:6px; }
+  .card h3 { font-size:15px; margin-bottom:6px; }
+  .card p { font-size:13px; margin-bottom:8px; }
+  .tags span { display:inline-block; font-size:10px; border:1px solid #85b7eb; color:#b5d4f4; padding:1px 6px; margin:0 4px 4px 0; }
+
+
+  /* ---------- home: intro text ---------- */
+  .hero { position:fixed; z-index:6; left:6vw; top:12vh; max-width:540px; }
+  .hero .label { font-size:11px; }
+  .hero h1 { font-size:clamp(40px, 5.5vw, 72px); line-height:1.02; letter-spacing:4px; margin-top:10px; }
+  .hero h1 .outline { color:transparent; -webkit-text-stroke:1.5px #e6f1fb; }
+  .hero .role { font-size:16px; margin-top:16px; color:#b5d4f4; }
+  .hero .pitch { font-size:15px; margin-top:8px; color:#cfe3f7; line-height:1.6; }
+  .buttons { display:flex; gap:12px; margin-top:26px; flex-wrap:wrap; }
+  .btn { font-size:14px; font-weight:bold; text-decoration:none; padding:10px 18px; border:2px solid #e6f1fb; color:#e6f1fb; background:rgba(11,63,115,.85); }
+  .btn.primary { background:#e6f1fb; color:#0b3f73; }
+  .btn:hover { background:#fff; color:#0b3f73; }
+  .hint { margin-top:18px; font-size:12px; color:#85b7eb; }
+
+  /* ---------- callout balloons on the drawing ---------- */
+  .balloons { z-index:4; }
+  .balloon { pointer-events:auto; cursor:pointer; outline:none; }
+  .balloon .leader { stroke:#e6f1fb; stroke-width:1.2; opacity:.8; }
+  .balloon .dot { fill:#e6f1fb; }
+  .balloon .ring { fill:#0b3f73; stroke:#e6f1fb; stroke-width:2; transition:fill .15s; }
+  .balloon .num { fill:#e6f1fb; font-size:17px; font-weight:bold; pointer-events:none; }
+  .balloon .pulse { fill:none; stroke:#e6f1fb; stroke-width:1.5; transform-box:fill-box; transform-origin:center; animation:pulse 2.4s infinite; }
+  @keyframes pulse { from { transform:scale(1); opacity:.8; } to { transform:scale(2); opacity:0; } }
+  .balloon .tip { opacity:0; transition:opacity .15s; pointer-events:none; }
+  .balloon .tip rect { fill:#e6f1fb; }
+  .balloon .tip text { fill:#0b3f73; font-size:14px; font-weight:bold; }
+  .balloon:hover .ring, .balloon:focus .ring { fill:#e6f1fb; }
+  .balloon:hover .num, .balloon:focus .num { fill:#0b3f73; }
+  .balloon:hover .tip, .balloon:focus .tip { opacity:1; }
+
+  /* when a page is open, hide the home stuff */
+  body.sheet-open .hero, body.sheet-open .balloons { display:none; }
+
+  .card.flash { animation:flash 1.8s; }
+  @keyframes flash { 0%,40% { background:rgba(230,241,251,.22); border-color:#fff; } 100% { background:transparent; } }
+
+  /* keyboard focus is visible */
+  a:focus-visible, button:focus-visible { outline:2px solid #fff; outline-offset:2px; }
+  .balloon:focus-visible .ring { stroke-width:3; }
+
+  /* phones: browser bars change the height, so use dvh where supported */
+  @supports (height:100dvh) {
+    .sheet { max-height:calc(100dvh - 12dvh - 200px); }
+  }
+
+  @media (max-width:600px) {
+    .title-block { right:10px; left:10px; bottom:10px; width:auto; }
+    .sheet { top:12px; max-height:calc(100vh - 260px); max-height:calc(100dvh - 260px); padding:20px; }
+    .hero { left:16px; right:16px; top:20px; }
+    .hero h1 { font-size:42px; }
+    .hint, .balloons { display:none; }
+  }
+
+  /* short screens (phone in landscape, small laptop window): keep the intro above the title block */
+  @media (max-height:620px) {
+    .hero { top:16px; }
+    .hero h1 { font-size:clamp(32px, 4.5vw, 52px); }
+    .hero .role { margin-top:10px; }
+    .buttons { margin-top:14px; }
+    .hint { display:none; }
+  }
+  @media (max-height:520px) { .hero .pitch { display:none; } }
+
+  @media (prefers-reduced-motion:reduce) {
+    .balloon .pulse { animation:none; opacity:0; }
+    .card.flash { animation:none; }
+  }
+</style>
 </head>
 <body>
+  <svg class="drawing dim" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" font-family="Courier New, monospace" aria-hidden="true"><g id="art" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M720.0 130.0 L780.0 130.0 L780.0 120.0 L900.0 120.0 L900.0 110.0 L1040.0 110.0 L1040.0 120.0 L1100.0 120.0 L1100.0 130.0 L1160.0 130.0 L1160.0 170.0 L1100.0 170.0 L1100.0 180.0 L1040.0 180.0 L1040.0 190.0 L900.0 190.0 L900.0 180.0 L780.0 180.0 L780.0 170.0 L720.0 170.0 Z" stroke-width="2"/><line x1="780.0" y1="120.0" x2="780.0" y2="180.0" stroke-width="2"/><line x1="900.0" y1="110.0" x2="900.0" y2="190.0" stroke-width="2"/><line x1="1040.0" y1="110.0" x2="1040.0" y2="190.0" stroke-width="2"/><line x1="1100.0" y1="120.0" x2="1100.0" y2="180.0" stroke-width="2"/><rect x="935" y="143" width="70" height="14" rx="7" stroke-width="1"/><line x1="695.0" y1="150.0" x2="1185.0" y2="150.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="720.0" y1="130.0" x2="720.0" y2="76.0" stroke-width="1"/><line x1="1160.0" y1="130.0" x2="1160.0" y2="76.0" stroke-width="1"/><line x1="720.0" y1="70.0" x2="1160.0" y2="70.0" stroke-width="1"/><path d="M720.0 70.0 l10.0 -4 v8 z" fill="currentColor" stroke="none"/><path d="M1160.0 70.0 l-10.0 -4 v8 z" fill="currentColor" stroke="none"/><text x="940.0" y="63.0" font-size="14" text-anchor="middle" fill="currentColor" stroke="none">440</text><line x1="900.0" y1="190.0" x2="900.0" y2="226.0" stroke-width="1"/><line x1="1040.0" y1="190.0" x2="1040.0" y2="226.0" stroke-width="1"/><line x1="900.0" y1="220.0" x2="1040.0" y2="220.0" stroke-width="1"/><path d="M900.0 220.0 l10.0 -4 v8 z" fill="currentColor" stroke="none"/><path d="M1040.0 220.0 l-10.0 -4 v8 z" fill="currentColor" stroke="none"/><text x="970.0" y="213.0" font-size="14" text-anchor="middle" fill="currentColor" stroke="none">140</text><line x1="900.0" y1="110.0" x2="886.0" y2="110.0" stroke-width="1"/><line x1="900.0" y1="190.0" x2="886.0" y2="190.0" stroke-width="1"/><line x1="880.0" y1="110.0" x2="880.0" y2="190.0" stroke-width="1"/><path d="M880.0 110.0 l-4 10.0 h8 z" fill="currentColor" stroke="none"/><path d="M880.0 190.0 l-4 -10.0 h8 z" fill="currentColor" stroke="none"/><text x="872.0" y="150.0" font-size="14" text-anchor="middle" fill="currentColor" stroke="none" transform="rotate(-90 872.0 150.0)">Ø80</text><text x="940.0" y="255.0" font-size="13" text-anchor="middle" fill="currentColor" stroke="none">SHAFT</text><rect x="1240" y="105" width="40" height="90" stroke-width="2"/><line x1="1240.0" y1="128.0" x2="1280.0" y2="128.0" stroke-width="1"/><line x1="1240.0" y1="172.0" x2="1280.0" y2="172.0" stroke-width="1"/><path d="M1280 125 L1535 125 L1545 135 L1545 165 L1535 175 L1280 175" stroke-width="2"/><line x1="1420.0" y1="131.0" x2="1545.0" y2="131.0" stroke-width="1"/><line x1="1420.0" y1="169.0" x2="1545.0" y2="169.0" stroke-width="1"/><line x1="1420.0" y1="125.0" x2="1420.0" y2="175.0" stroke-width="1"/><line x1="1426.0" y1="125.0" x2="1431.0" y2="175.0" stroke-width="1"/><line x1="1435.0" y1="125.0" x2="1440.0" y2="175.0" stroke-width="1"/><line x1="1444.0" y1="125.0" x2="1449.0" y2="175.0" stroke-width="1"/><line x1="1453.0" y1="125.0" x2="1458.0" y2="175.0" stroke-width="1"/><line x1="1462.0" y1="125.0" x2="1467.0" y2="175.0" stroke-width="1"/><line x1="1471.0" y1="125.0" x2="1476.0" y2="175.0" stroke-width="1"/><line x1="1480.0" y1="125.0" x2="1485.0" y2="175.0" stroke-width="1"/><line x1="1489.0" y1="125.0" x2="1494.0" y2="175.0" stroke-width="1"/><line x1="1498.0" y1="125.0" x2="1503.0" y2="175.0" stroke-width="1"/><line x1="1507.0" y1="125.0" x2="1512.0" y2="175.0" stroke-width="1"/><line x1="1516.0" y1="125.0" x2="1521.0" y2="175.0" stroke-width="1"/><line x1="1525.0" y1="125.0" x2="1530.0" y2="175.0" stroke-width="1"/><line x1="1534.0" y1="125.0" x2="1539.0" y2="175.0" stroke-width="1"/><line x1="1220.0" y1="150.0" x2="1565.0" y2="150.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="1240.0" y1="100.0" x2="1240.0" y2="66.0" stroke-width="1"/><line x1="1545.0" y1="100.0" x2="1545.0" y2="66.0" stroke-width="1"/><line x1="1240.0" y1="60.0" x2="1545.0" y2="60.0" stroke-width="1"/><path d="M1240.0 60.0 l10.0 -4 v8 z" fill="currentColor" stroke="none"/><path d="M1545.0 60.0 l-10.0 -4 v8 z" fill="currentColor" stroke="none"/><text x="1392.5" y="53.0" font-size="14" text-anchor="middle" fill="currentColor" stroke="none">305</text><text x="1390.0" y="220.0" font-size="13" text-anchor="middle" fill="currentColor" stroke="none">HEX BOLT M50</text><path d="M910.0 352.0 L927.8 353.2 L938.6 332.8 L953.9 336.6 L953.8 359.7 L953.8 359.7 L970.1 367.0 L987.3 351.4 L1000.3 360.2 L992.3 381.9 L992.3 381.9 L1005.1 394.4 L1026.6 385.6 L1035.8 398.3 L1020.9 416.0 L1020.9 416.0 L1028.7 432.1 L1051.8 431.2 L1056.2 446.3 L1036.1 457.8 L1036.1 457.8 L1037.9 475.5 L1060.0 482.6 L1058.9 498.3 L1036.1 502.2 L1036.1 502.2 L1031.7 519.6 L1050.0 533.8 L1043.7 548.1 L1020.9 544.0 L1020.9 544.0 L1010.9 558.8 L1023.2 578.4 L1012.3 589.7 L992.3 578.1 L992.3 578.1 L977.8 588.6 L982.7 611.2 L968.6 618.1 L953.8 600.3 L953.8 600.3 L936.6 605.2 L933.5 628.2 L917.9 629.8 L910.0 608.0 L910.0 608.0 L892.2 606.8 L881.4 627.2 L866.1 623.4 L866.2 600.3 L866.2 600.3 L849.9 593.0 L832.7 608.6 L819.7 599.8 L827.7 578.1 L827.7 578.1 L814.9 565.6 L793.4 574.4 L784.2 561.7 L799.1 544.0 L799.1 544.0 L791.3 527.9 L768.2 528.8 L763.8 513.7 L783.9 502.2 L783.9 502.2 L782.1 484.5 L760.0 477.4 L761.1 461.7 L783.9 457.8 L783.9 457.8 L788.3 440.4 L770.0 426.2 L776.3 411.9 L799.1 416.0 L799.1 416.0 L809.1 401.2 L796.8 381.6 L807.7 370.3 L827.7 381.9 L827.7 381.9 L842.2 371.4 L837.3 348.8 L851.4 341.9 L866.2 359.7 L866.2 359.7 L883.4 354.8 L886.5 331.8 L902.1 330.2 L910.0 352.0 Z" stroke-width="2"/><circle cx="910.0" cy="480.0" r="139.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><circle cx="910.0" cy="480.0" r="62.0" stroke-width="2"/><circle cx="1005.0" cy="480.0" r="15.0" stroke-width="1"/><circle cx="957.5" cy="562.3" r="15.0" stroke-width="1"/><circle cx="862.5" cy="562.3" r="15.0" stroke-width="1"/><circle cx="815.0" cy="480.0" r="15.0" stroke-width="1"/><circle cx="862.5" cy="397.7" r="15.0" stroke-width="1"/><circle cx="957.5" cy="397.7" r="15.0" stroke-width="1"/><circle cx="910.0" cy="480.0" r="95.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><path d="M904 452.7 L904 444 L916 444 L916 452.7 A28 28 0 1 1 904 452.7 Z" stroke-width="2"/><line x1="735.0" y1="480.0" x2="1085.0" y2="480.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="910.0" y1="305.0" x2="910.0" y2="655.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="760.0" y1="490.0" x2="760.0" y2="691.0" stroke-width="1"/><line x1="1060.0" y1="490.0" x2="1060.0" y2="691.0" stroke-width="1"/><line x1="760.0" y1="685.0" x2="1060.0" y2="685.0" stroke-width="1"/><path d="M760.0 685.0 l10.0 -4 v8 z" fill="currentColor" stroke="none"/><path d="M1060.0 685.0 l-10.0 -4 v8 z" fill="currentColor" stroke="none"/><text x="910.0" y="678.0" font-size="14" text-anchor="middle" fill="currentColor" stroke="none">Ø300</text><text x="910.0" y="725.0" font-size="13" text-anchor="middle" fill="currentColor" stroke="none">SPUR GEAR  z=18  m=16</text><path d="M1417.9 515.0 L1340.0 560.0 L1262.1 515.0 L1262.1 425.0 L1340.0 380.0 L1417.9 425.0 Z" stroke-width="2"/><circle cx="1340.0" cy="470.0" r="78.0" stroke-width="1"/><circle cx="1340.0" cy="470.0" r="40.0" stroke-width="2"/><path d="M1386 470 A46 46 0 1 1 1340 424" stroke-width="1"/><line x1="1225.0" y1="470.0" x2="1455.0" y2="470.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="1340.0" y1="355.0" x2="1340.0" y2="585.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="1262.0" y1="390.0" x2="1262.0" y2="358.0" stroke-width="1"/><line x1="1418.0" y1="390.0" x2="1418.0" y2="358.0" stroke-width="1"/><line x1="1262.0" y1="352.0" x2="1418.0" y2="352.0" stroke-width="1"/><path d="M1262.0 352.0 l10.0 -4 v8 z" fill="currentColor" stroke="none"/><path d="M1418.0 352.0 l-10.0 -4 v8 z" fill="currentColor" stroke="none"/><text x="1340.0" y="345.0" font-size="14" text-anchor="middle" fill="currentColor" stroke="none">S75</text><text x="1340.0" y="605.0" font-size="13" text-anchor="middle" fill="currentColor" stroke="none">HEX NUT M50</text><circle cx="600.0" cy="740.0" r="112.5" stroke-width="2"/><circle cx="600.0" cy="740.0" r="93.8" stroke-width="1"/><circle cx="600.0" cy="740.0" r="63.8" stroke-width="1"/><circle cx="600.0" cy="740.0" r="45.0" stroke-width="2"/><circle cx="600.0" cy="740.0" r="78.8" stroke-width="1" stroke-dasharray="18 4 3 4"/><circle cx="678.8" cy="740.0" r="12.8" stroke-width="1"/><circle cx="663.7" cy="786.3" r="12.8" stroke-width="1"/><circle cx="624.3" cy="814.9" r="12.8" stroke-width="1"/><circle cx="575.7" cy="814.9" r="12.8" stroke-width="1"/><circle cx="536.3" cy="786.3" r="12.8" stroke-width="1"/><circle cx="521.2" cy="740.0" r="12.8" stroke-width="1"/><circle cx="536.3" cy="693.7" r="12.8" stroke-width="1"/><circle cx="575.7" cy="665.1" r="12.8" stroke-width="1"/><circle cx="624.3" cy="665.1" r="12.8" stroke-width="1"/><circle cx="663.7" cy="693.7" r="12.8" stroke-width="1"/><line x1="465.0" y1="740.0" x2="735.0" y2="740.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="600.0" y1="605.0" x2="600.0" y2="875.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><text x="600.0" y="890.0" font-size="13" text-anchor="middle" fill="currentColor" stroke="none">BALL BEARING 6212</text><clipPath id="dclip"><path d="M130 640 L420 640 L420 685 L185 685 L185 880 L130 880 Z"/></clipPath><g clip-path="url(#dclip)"><line x1="-170.0" y1="880.0" x2="70.0" y2="640.0" stroke-width="0.8"/><line x1="-158.0" y1="880.0" x2="82.0" y2="640.0" stroke-width="0.8"/><line x1="-146.0" y1="880.0" x2="94.0" y2="640.0" stroke-width="0.8"/><line x1="-134.0" y1="880.0" x2="106.0" y2="640.0" stroke-width="0.8"/><line x1="-122.0" y1="880.0" x2="118.0" y2="640.0" stroke-width="0.8"/><line x1="-110.0" y1="880.0" x2="130.0" y2="640.0" stroke-width="0.8"/><line x1="-98.0" y1="880.0" x2="142.0" y2="640.0" stroke-width="0.8"/><line x1="-86.0" y1="880.0" x2="154.0" y2="640.0" stroke-width="0.8"/><line x1="-74.0" y1="880.0" x2="166.0" y2="640.0" stroke-width="0.8"/><line x1="-62.0" y1="880.0" x2="178.0" y2="640.0" stroke-width="0.8"/><line x1="-50.0" y1="880.0" x2="190.0" y2="640.0" stroke-width="0.8"/><line x1="-38.0" y1="880.0" x2="202.0" y2="640.0" stroke-width="0.8"/><line x1="-26.0" y1="880.0" x2="214.0" y2="640.0" stroke-width="0.8"/><line x1="-14.0" y1="880.0" x2="226.0" y2="640.0" stroke-width="0.8"/><line x1="-2.0" y1="880.0" x2="238.0" y2="640.0" stroke-width="0.8"/><line x1="10.0" y1="880.0" x2="250.0" y2="640.0" stroke-width="0.8"/><line x1="22.0" y1="880.0" x2="262.0" y2="640.0" stroke-width="0.8"/><line x1="34.0" y1="880.0" x2="274.0" y2="640.0" stroke-width="0.8"/><line x1="46.0" y1="880.0" x2="286.0" y2="640.0" stroke-width="0.8"/><line x1="58.0" y1="880.0" x2="298.0" y2="640.0" stroke-width="0.8"/><line x1="70.0" y1="880.0" x2="310.0" y2="640.0" stroke-width="0.8"/><line x1="82.0" y1="880.0" x2="322.0" y2="640.0" stroke-width="0.8"/><line x1="94.0" y1="880.0" x2="334.0" y2="640.0" stroke-width="0.8"/><line x1="106.0" y1="880.0" x2="346.0" y2="640.0" stroke-width="0.8"/><line x1="118.0" y1="880.0" x2="358.0" y2="640.0" stroke-width="0.8"/><line x1="130.0" y1="880.0" x2="370.0" y2="640.0" stroke-width="0.8"/><line x1="142.0" y1="880.0" x2="382.0" y2="640.0" stroke-width="0.8"/><line x1="154.0" y1="880.0" x2="394.0" y2="640.0" stroke-width="0.8"/><line x1="166.0" y1="880.0" x2="406.0" y2="640.0" stroke-width="0.8"/><line x1="178.0" y1="880.0" x2="418.0" y2="640.0" stroke-width="0.8"/><line x1="190.0" y1="880.0" x2="430.0" y2="640.0" stroke-width="0.8"/><line x1="202.0" y1="880.0" x2="442.0" y2="640.0" stroke-width="0.8"/><line x1="214.0" y1="880.0" x2="454.0" y2="640.0" stroke-width="0.8"/><line x1="226.0" y1="880.0" x2="466.0" y2="640.0" stroke-width="0.8"/><line x1="238.0" y1="880.0" x2="478.0" y2="640.0" stroke-width="0.8"/><line x1="250.0" y1="880.0" x2="490.0" y2="640.0" stroke-width="0.8"/><line x1="262.0" y1="880.0" x2="502.0" y2="640.0" stroke-width="0.8"/><line x1="274.0" y1="880.0" x2="514.0" y2="640.0" stroke-width="0.8"/><line x1="286.0" y1="880.0" x2="526.0" y2="640.0" stroke-width="0.8"/><line x1="298.0" y1="880.0" x2="538.0" y2="640.0" stroke-width="0.8"/><line x1="310.0" y1="880.0" x2="550.0" y2="640.0" stroke-width="0.8"/><line x1="322.0" y1="880.0" x2="562.0" y2="640.0" stroke-width="0.8"/><line x1="334.0" y1="880.0" x2="574.0" y2="640.0" stroke-width="0.8"/><line x1="346.0" y1="880.0" x2="586.0" y2="640.0" stroke-width="0.8"/><line x1="358.0" y1="880.0" x2="598.0" y2="640.0" stroke-width="0.8"/><line x1="370.0" y1="880.0" x2="610.0" y2="640.0" stroke-width="0.8"/><line x1="382.0" y1="880.0" x2="622.0" y2="640.0" stroke-width="0.8"/><line x1="394.0" y1="880.0" x2="634.0" y2="640.0" stroke-width="0.8"/><line x1="406.0" y1="880.0" x2="646.0" y2="640.0" stroke-width="0.8"/><line x1="418.0" y1="880.0" x2="658.0" y2="640.0" stroke-width="0.8"/><line x1="430.0" y1="880.0" x2="670.0" y2="640.0" stroke-width="0.8"/><line x1="442.0" y1="880.0" x2="682.0" y2="640.0" stroke-width="0.8"/><line x1="454.0" y1="880.0" x2="694.0" y2="640.0" stroke-width="0.8"/><line x1="466.0" y1="880.0" x2="706.0" y2="640.0" stroke-width="0.8"/><line x1="478.0" y1="880.0" x2="718.0" y2="640.0" stroke-width="0.8"/><line x1="490.0" y1="880.0" x2="730.0" y2="640.0" stroke-width="0.8"/><line x1="502.0" y1="880.0" x2="742.0" y2="640.0" stroke-width="0.8"/><line x1="514.0" y1="880.0" x2="754.0" y2="640.0" stroke-width="0.8"/><line x1="526.0" y1="880.0" x2="766.0" y2="640.0" stroke-width="0.8"/></g><path d="M130 640 L420 640 L420 685 L185 685 L185 880 L130 880 Z" stroke-width="2"/><line x1="260.0" y1="620.0" x2="260.0" y2="705.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="360.0" y1="620.0" x2="360.0" y2="705.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="110.0" y1="750.0" x2="205.0" y2="750.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="110.0" y1="830.0" x2="205.0" y2="830.0" stroke-width="1" stroke-dasharray="18 4 3 4"/><line x1="130.0" y1="640.0" x2="130.0" y2="621.0" stroke-width="1"/><line x1="420.0" y1="640.0" x2="420.0" y2="621.0" stroke-width="1"/><line x1="130.0" y1="615.0" x2="420.0" y2="615.0" stroke-width="1"/><path d="M130.0 615.0 l10.0 -4 v8 z" fill="currentColor" stroke="none"/><path d="M420.0 615.0 l-10.0 -4 v8 z" fill="currentColor" stroke="none"/><text x="275.0" y="608.0" font-size="14" text-anchor="middle" fill="currentColor" stroke="none">290</text><text x="300.0" y="725.0" font-size="13" text-anchor="middle" fill="currentColor" stroke="none">BRACKET  SECTION A–A</text></g></svg>
+  <svg class="drawing lit" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" font-family="Courier New, monospace" aria-hidden="true"><use href="#art"/></svg>
+  <svg class="drawing balloons" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" font-family="Courier New, monospace"><g class="balloon" data-target="p-001" tabindex="0" role="link" aria-label="P-001  Hand-tracking mouse →">
+  <line x1="738.3" y1="232.3" x2="750.0" y2="170.0" class="leader"/>
+  <circle cx="750.0" cy="170.0" r="3.5" class="dot"/>
+  <circle cx="735" cy="250" r="18" class="pulse" style="animation-delay:0.0s"/>
+  <circle cx="735" cy="250" r="18" class="ring"/>
+  <text x="735" y="256" text-anchor="middle" class="num">1</text>
+  <g class="tip"><rect x="761" y="234" width="264.8" height="32"/><text x="773" y="255">P-001  Hand-tracking mouse →</text></g>
+</g><g class="balloon" data-target="p-002" tabindex="0" role="link" aria-label="P-002  Custom PCB →">
+  <line x1="1105.3" y1="310.4" x2="1016.0" y2="374.0" class="leader"/>
+  <circle cx="1016.0" cy="374.0" r="3.5" class="dot"/>
+  <circle cx="1120" cy="300" r="18" class="pulse" style="animation-delay:0.8s"/>
+  <circle cx="1120" cy="300" r="18" class="ring"/>
+  <text x="1120" y="306" text-anchor="middle" class="num">2</text>
+  <g class="tip"><rect x="1146" y="284" width="187.4" height="32"/><text x="1158" y="305">P-002  Custom PCB →</text></g>
+</g><g class="balloon" data-target="p-003" tabindex="0" role="link" aria-label="P-003  CAD project →">
+  <line x1="783.7" y1="837.3" x2="697.0" y2="796.0" class="leader"/>
+  <circle cx="697.0" cy="796.0" r="3.5" class="dot"/>
+  <circle cx="800" cy="845" r="18" class="pulse" style="animation-delay:1.6s"/>
+  <circle cx="800" cy="845" r="18" class="ring"/>
+  <text x="800" y="851" text-anchor="middle" class="num">3</text>
+  <g class="tip"><rect x="826" y="829" width="196.0" height="32"/><text x="838" y="850">P-003  CAD project →</text></g>
+</g></svg>
 
-  <!-- ===================== NAVIGATION ===================== -->
-  <header class="nav">
-    <div class="container nav__inner">
-      <a href="#top" class="nav__logo">bekzhan<span class="accent">.</span></a>
-      <nav class="nav__links">
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-      </nav>
+  <!-- ===================== HOME: intro (edit the text here) ===================== -->
+  <div class="hero">
+    <span class="label">DRAWING NO. BK-001 · REV. A</span>
+    <h1>BEKZHAN<br><span class="outline">AZAMAT</span></h1>
+    <div class="role">Mechanical Engineering student · Politecnico di Torino</div>
+    <div class="pitch">I design, build and code things, from CAD models to circuits.</div>
+    <div class="buttons">
+      <a class="btn primary" href="#projects">View projects →</a>
+      <!-- CV button: put cv.pdf next to index.html, then delete the two comment marks around this line -->
+      <!-- <a class="btn" href="cv.pdf" download>Download CV ↓</a> -->
     </div>
-  </header>
+    <div class="hint">Tip: hover the numbered balloons on the drawing.</div>
+  </div>
 
-  <main id="top">
+  <!-- =====================================================
+       SHEETS (tabs).  To add a new tab: copy one <section>,
+       change id, data-title and the content. That's it —
+       the tab button and sheet number are made automatically.
+       ===================================================== -->
 
-    <!-- ===================== 1. HERO ===================== -->
-    <section class="hero container">
-      <!-- ✏️ EDIT: small line above your name -->
-      <p class="hero__eyebrow">Mechanical Engineering · Politecnico di Torino</p>
+  <section class="sheet home" id="home" data-title="Home"></section>
 
-      <!-- ✏️ EDIT: your name -->
-      <h1 class="hero__title">Hi, I'm <span class="accent">Bekzhan</span>.</h1>
-
-      <!-- ✏️ EDIT: one-line description -->
-      <p class="hero__subtitle">
-        I design things in CAD, wire them up with electronics, and write the code that makes them move.
-        Looking for a mechanical engineering internship in Piedmont.
-      </p>
-
-      <div class="hero__buttons">
-        <!-- ✏️ EDIT: replace the three links below -->
-        <a class="btn btn--primary" href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="btn" href="https://github.com/YOUR-GITHUB" target="_blank" rel="noopener">GitHub</a>
-        <a class="btn" href="mailto:hello@bekzhan.com">Email</a>
+  <section class="sheet" id="projects" data-title="Projects">
+    <h2>PROJECTS</h2>
+    <div class="sub">PARTS LIST</div>
+    <div class="grid">
+      <div class="card" id="p-001">
+        <span class="label">PART NO. P-001</span>
+        <h3>Hand-tracking mouse</h3>
+        <p>Control the cursor with hand gestures through a webcam.</p>
+        <div class="tags"><span>Python</span><span>Computer vision</span></div>
       </div>
-    </section>
-
-    <!-- ===================== 2. ABOUT ===================== -->
-    <section id="about" class="section container">
-      <h2 class="section__title">About</h2>
-      <div class="about">
-        <!-- ✏️ EDIT: your About text (2–3 sentences) -->
-        <p>
-          I'm a 3rd-year Mechanical Engineering student at Politecnico di Torino, Italy.
-          I enjoy turning ideas into real objects — from 3D models in SolidWorks and Blender
-          to Arduino-powered prototypes and small robots.
-        </p>
-        <p>
-          In my free time I build small apps and games. I'm currently looking for an
-          internship in Piedmont where I can learn from real engineering teams.
-        </p>
-
-        <!-- ✏️ EDIT: skill tags (add / remove <li> lines) -->
-        <ul class="tags">
-          <li>SolidWorks</li>
-          <li>Blender</li>
-          <li>Arduino</li>
-          <li>Electronics</li>
-          <li>Robotics</li>
-          <li>Programming</li>
-        </ul>
+      <div class="card" id="p-002">
+        <span class="label">PART NO. P-002</span>
+        <h3>Custom PCB</h3>
+        <p>A board I designed and soldered myself.</p>
+        <div class="tags"><span>Electronics</span><span>Soldering</span></div>
       </div>
-    </section>
-
-    <!-- ===================== 3. PROJECTS ===================== -->
-    <!--
-      Each project is one <a class="card"> block.
-      - To add a project: copy a whole card block and change the text.
-      - Image: put your picture in assets/img/ and change the src="..." path.
-      - Link: href points to the project's own page in projects/ (copy projects/project-template.html).
-    -->
-    <section id="projects" class="section container">
-      <h2 class="section__title">Projects</h2>
-      <div class="grid">
-
-        <!-- ✏️ PROJECT 1 -->
-        <a class="card" href="projects/project-template.html">
-          <img class="card__img" src="assets/img/placeholder.svg" alt="Project 1 image" loading="lazy">
-          <div class="card__body">
-            <span class="card__tag">CAD</span>
-            <h3 class="card__title">Project One</h3>
-            <p class="card__text">Short description of the project — what it is and what you did.</p>
-          </div>
-        </a>
-
-        <!-- ✏️ PROJECT 2 -->
-        <a class="card" href="projects/project-template.html">
-          <img class="card__img" src="assets/img/placeholder.svg" alt="Project 2 image" loading="lazy">
-          <div class="card__body">
-            <span class="card__tag">Electronics</span>
-            <h3 class="card__title">Project Two</h3>
-            <p class="card__text">Short description of the project — what it is and what you did.</p>
-          </div>
-        </a>
-
-        <!-- ✏️ PROJECT 3 -->
-        <a class="card" href="projects/project-template.html">
-          <img class="card__img" src="assets/img/placeholder.svg" alt="Project 3 image" loading="lazy">
-          <div class="card__body">
-            <span class="card__tag">Robotics</span>
-            <h3 class="card__title">Project Three</h3>
-            <p class="card__text">Short description of the project — what it is and what you did.</p>
-          </div>
-        </a>
-
-        <!-- ✏️ PROJECT 4 -->
-        <a class="card" href="projects/project-template.html">
-          <img class="card__img" src="assets/img/placeholder.svg" alt="Project 4 image" loading="lazy">
-          <div class="card__body">
-            <span class="card__tag">Code</span>
-            <h3 class="card__title">Project Four</h3>
-            <p class="card__text">Short description of the project — what it is and what you did.</p>
-          </div>
-        </a>
-
+      <div class="card" id="p-003">
+        <span class="label">PART NO. P-003</span>
+        <h3>CAD project</h3>
+        <p>SolidWorks model, an interactive 3D viewer goes here.</p>
+        <div class="tags"><span>SolidWorks</span><span>Design</span></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ===================== 4. CONTACT ===================== -->
-    <section id="contact" class="section container contact">
-      <h2 class="section__title">Contact</h2>
-      <p class="contact__text">Open to internship opportunities in Piedmont. The best way to reach me is by email.</p>
+  <section class="sheet" id="about" data-title="About">
+    <h2>ABOUT</h2>
+    <div class="sub">GENERAL NOTES</div>
+    <p>3rd-year Mechanical Engineering student at Politecnico di Torino. Write a few lines about yourself here.</p>
+  </section>
 
-      <!-- ✏️ EDIT: your email (change it in BOTH places on this line) -->
-      <a class="contact__email" href="mailto:hello@bekzhan.com">hello@bekzhan.com</a>
+  <section class="sheet" id="contact" data-title="Contact">
+    <h2>CONTACT</h2>
+    <div class="sub">REVISIONS AND APPROVALS</div>
+    <p>Email: <a href="mailto:you@bekzhan.com">you@bekzhan.com</a></p>
+    <p>LinkedIn: <a href="#">linkedin.com/in/...</a></p>
+  </section>
 
-      <div class="contact__links">
-        <!-- ✏️ EDIT: same links as in the hero -->
-        <a href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://github.com/YOUR-GITHUB" target="_blank" rel="noopener">GitHub</a>
-      </div>
-    </section>
+  <!-- ===================== title block ===================== -->
+  <nav class="title-block">
+    <div class="tb-row"><div class="name">BEKZHAN AZAMAT</div></div>
+    <div class="tb-row"><div class="role">Mechanical Engineering · Politecnico di Torino</div></div>
+    <div class="tb-row" id="tabs"></div>
+    <div class="tb-row meta">
+      <div><span class="label">SHEET</span><span id="sheet-no">1 / 1</span></div>
+      <div><span class="label">SCALE</span>1 : 1</div>
+      <div><span class="label">MATERIAL</span>Ideas + steel</div>
+    </div>
+  </nav>
 
-  </main>
+<script>
+  // ---- cursor light ----
+  const root = document.documentElement;
+  // updates at most once per frame, so the glow stays smooth on slower laptops
+  let px = 0, py = 0, queued = false;
+  window.addEventListener("pointermove", e => {
+    px = e.clientX; py = e.clientY;
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      root.style.setProperty("--x", px + "px");
+      root.style.setProperty("--y", py + "px");
+      queued = false;
+    });
+  }, { passive:true });
 
-  <footer class="footer container">
-    <p>© <span id="year">2026</span> Bekzhan · Torino, Italy</p>
-  </footer>
+  // ---- tabs: built automatically from every <section class="sheet"> ----
+  const sheets = [...document.querySelectorAll(".sheet")];
+  const tabs = document.getElementById("tabs");
+  const sheetNo = document.getElementById("sheet-no");
 
-  <script src="js/main.js"></script>
+  sheets.forEach((s, i) => {
+    const num = String(i + 1).padStart(2, "0");
+    const b = document.createElement("button");
+    b.innerHTML = `<span class="label">${num}</span>${s.dataset.title}`;
+    b.onclick = () => { location.hash = s.id; };
+    tabs.appendChild(b);
+    if (!s.classList.contains("home")) {
+      const x = document.createElement("button");
+      x.className = "close"; x.textContent = "×"; x.setAttribute("aria-label", "Close");
+      x.onclick = () => { location.hash = sheets[0].id; };
+      s.prepend(x);
+    }
+  });
+
+  // ---- balloons: click opens the project they point to ----
+  document.querySelectorAll(".balloon").forEach(b => {
+    const go = () => { location.hash = b.dataset.target; };
+    b.addEventListener("click", go);
+    b.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+  });
+
+  function show() {
+    const id = location.hash.slice(1) || sheets[0].id;
+    const target = document.getElementById(id);
+    const sheet = target ? target.closest(".sheet") : null;
+    let idx = sheet ? sheets.indexOf(sheet) : 0;
+    if (idx < 0) idx = 0;
+    document.body.classList.toggle("sheet-open", !sheets[idx].classList.contains("home"));
+    if (target && !target.classList.contains("sheet")) {      // a project card: scroll + flash
+      setTimeout(() => {
+        target.scrollIntoView({ block: "nearest" });
+        target.classList.remove("flash"); void target.offsetWidth; target.classList.add("flash");
+      }, 0);
+    }
+    sheets.forEach((s, i) => s.classList.toggle("open", i === idx));
+    [...tabs.children].forEach((b, i) => b.classList.toggle("active", i === idx));
+    sheetNo.textContent = `${idx + 1} / ${sheets.length}`;
+  }
+  window.addEventListener("hashchange", show);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") location.hash = sheets[0].id; });
+  show();
+</script>
 </body>
 </html>
